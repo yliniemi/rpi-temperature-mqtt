@@ -1,0 +1,15 @@
+{
+    "mqtt_client_id": "rpi_1wire",
+    "mqtt_host": "192.168.0.70",
+    "mqtt_port": "1883",
+    "mqtt_user": "ian",
+    "mqtt_password" : "macmac51",
+    "wait_update": "60",
+    "verbose": "true",
+    "sources": [
+        {
+          "serial": "28-0004332d9dff",
+          "topic": "tele/ServerRoom/rack01_front_bottom",
+	  "device": "rack0_lower_front"
+        }      ]
+}
