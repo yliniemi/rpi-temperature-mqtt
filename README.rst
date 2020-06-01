@@ -29,11 +29,11 @@ Needs a json configuration file as follows (don't forget to change ip and creden
             },
             {
              "serial": "10-0008031e804b",
-             "topic": "tele/ServerRoom/rack0_front_bottom",
+             "topic": "tele/ServerRoom/rack0_front_top",
              "device": "rack0_upper_front"            },
             {
               "serial": "10-0008031eaac7",
-             "topic": "tele/ServerRoom/rack0_front_bottom",
+             "topic": "tele/ServerRoom/rack0_front_rear",
               "device": "rack0_upper_rear"            }
           ]
     }
