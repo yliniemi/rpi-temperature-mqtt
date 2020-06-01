@@ -24,16 +24,17 @@ Needs a json configuration file as follows (don't forget to change ip and creden
         "sources": [
             {
               "serial": "10-0008031e4d9e",
-              "topic": "halti/stweg/temperature_heating"
+              "topic": "tele/ServerRoom/rack0_front_bottom",
+              "device": "rack0_lower_front"
             },
             {
-              "serial": "10-0008031e804b",
-              "topic": "halti/stweg/temperature_water"
-            },
+             "serial": "10-0008031e804b",
+             "topic": "tele/ServerRoom/rack0_front_bottom",
+             "device": "rack0_upper_front"            },
             {
               "serial": "10-0008031eaac7",
-              "topic": "halti/stweg/temperature_solar"
-            }
+             "topic": "tele/ServerRoom/rack0_front_bottom",
+              "device": "rack0_upper_rear"            }
           ]
     }
 
