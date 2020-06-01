@@ -2,8 +2,8 @@
     "mqtt_client_id": "rpi_1wire",
     "mqtt_host": "192.168.0.70",
     "mqtt_port": "1883",
-    "mqtt_user": "ian",
-    "mqtt_password" : "macmac51",
+    "mqtt_user": "user",
+    "mqtt_password" : "password",
     "wait_update": "60",
     "verbose": "true",
     "sources": [
