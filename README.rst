@@ -55,7 +55,7 @@ In case your mqtt has user and passwd
     
     "mqtt_password": "password",
 
-You may enable verbose mode to catch issues
+You may enable verbose mode to catch issues, also enable for systemd 
 
     "verbose": "true",
 
