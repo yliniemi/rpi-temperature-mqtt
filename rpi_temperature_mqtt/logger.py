@@ -77,8 +77,6 @@ class TemperatureLogger:
         while True:
         
             for source in self.config['sources']:
-                print self.config['sources'] 
-                print len(self.config['sources'])
                 serial = source['serial']
                 topic = source['topic']
 
