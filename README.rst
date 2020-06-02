@@ -7,7 +7,7 @@ Reads the the temperature of DS18B20 sensors and sends it to a mqtt broker.
 Installation:
 -------------------
 
-    pip install rpi-temperature-mqtt
+Clone the repo
 
 Configuration:
 -------------------
