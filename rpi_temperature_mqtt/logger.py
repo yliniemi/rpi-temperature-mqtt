@@ -13,11 +13,13 @@ class TemperatureLogger:
     mqtt_client = None
     mqtt_connected = False
     worker = None
-    temperatures = {}
+    # removed as not one of my requirements
+    #temperatures = {}
 
     def __init__(self, config):
         self.config = config
-
+        self.wait_update = self.config.get('wait_update', float(60))
+        self.wait_process = self.config.get('wait_process', float(5))
     def verbose(self, message):
         if self.config and 'verbose' in self.config and self.config['verbose'] == 'true':
             sys.stdout.write('VERBOSE: ' + message + '\n')
@@ -73,7 +75,10 @@ class TemperatureLogger:
 
     def update(self):
         while True:
+        
             for source in self.config['sources']:
+                print self.config['sources'] 
+                print len(self.config['sources'])
                 serial = source['serial']
                 topic = source['topic']
 
@@ -86,15 +91,22 @@ class TemperatureLogger:
                 if match:
                     temperature_raw = match.group(1)
                     temperature = round(float(temperature_raw)/1000, 2)
-
                     if 'offset' in source:
                         temperature += float(source['offset'])
+                    self.publish_temperature(topic, temperature, dev)
 
+                    
+                    '''
+                    # the block means only temerature changes are published, my requirement is to publish
+                    # regardless many may want this will look at making it an option
                     if serial not in self.temperatures or self.temperatures[serial] != temperature:
                         self.temperatures[serial] = temperature
-                        self.publish_temperature(topic, temperature, dev)
-                time.sleep(5)
-            time.sleep(300)
+                        self.publish_temperature(topic, temperature, dev)'''
+                self.verbose('Entering wait_process delay of: ' + str(self.wait_process) + ' Seconds')
+                time.sleep(self.wait_process)
+            
+            self.verbose('Entering wait_update delay of: ' + str(self.wait_update) + ' Seconds')
+            time.sleep(self.wait_update)
 
     def publish_temperature(self, topic, temperature, dev):
         if self.mqtt_connected:
