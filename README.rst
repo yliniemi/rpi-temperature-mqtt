@@ -44,11 +44,11 @@ Optional json variables:
 
 Wait before query all sensors again (defaults to 300)
     
-    "wait_update": "60",
+    "wait_update": 60.0,
     
 Wait between sensor reads (defaults to 5)
     
-    "wait_process": "3",
+    "wait_process": 3.0,
     
 In case your mqtt has user and passwd
     
