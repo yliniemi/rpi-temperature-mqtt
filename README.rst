@@ -9,6 +9,12 @@ Installation:
 
 Clone the repo
 
+For python2, from the bash prompt, enter:
+
+$ sudo python setup.py install
+
+This will install the Python files in /usr/local/lib/python2.7 making them ready for use in other programs.
+
 Configuration:
 -------------------
 
@@ -18,7 +24,7 @@ Needs a json configuration file as follows (don't forget to change ip and creden
 .. code:: json
 
     {
-        "mqtt_client_id": "power_meter",
+        "mqtt_client_id": "environmental_sensors",
         "mqtt_host": "192.168.0.210",
         "mqtt_port": "1883",
         "sources": [
