@@ -13,7 +13,6 @@ For python2, from the bash prompt, enter:
 
 $ sudo python setup.py install
 
-This will install the Python files in /usr/local/lib/python2.7 making them ready for use in other programs.
 
 Configuration:
 -------------------
