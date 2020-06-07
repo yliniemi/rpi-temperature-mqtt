@@ -18,9 +18,8 @@ Configuration:
 -------------------
 
 You can list available 1wire devices like so
-$ ls /sys/bus/w1/devices
 DS18B20 devices typically start **28-**
-
+> $ ls /sys/bus/w1/devices
 > 28-0004330feaff  w1_bus_master1
 
 you can get a raw temperature reading 
