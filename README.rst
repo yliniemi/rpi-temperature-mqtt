@@ -10,7 +10,7 @@ Installation:
 Clone the repo
 
 For python2, from the bash prompt, enter:
-
+$ sudo apt-get install -y python-setuptools
 $ sudo python setup.py install
 
 Configuration:
