@@ -24,9 +24,10 @@ DS18B20 devices typically start 28-
 
 you can get a raw temperature reading 
 $ cat /sys/bus/w1/devices/28-0004330feaff/w1_slave
+```
 59 01 55 00 7f ff 0c 10 bc : crc=bc YES
 59 01 55 00 7f ff 0c 10 bc t=21562 # t=temperature / 1000 = 21.562
-
+```
 Need to define json configuration file as follows, changing values to suit your 
 needs and device ID's
 
@@ -80,7 +81,7 @@ You may enable verbose mode to catch issues, also enable for systemd
 Start:
 -------------------
 CLI:
-    rpi-temperature-mqtt config.json
+   > rpi-temperature-mqtt config.json
 
 Systemd
    ```
