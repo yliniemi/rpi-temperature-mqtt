@@ -18,7 +18,7 @@ setup(
     url='https://github.com/ijm51000/rpi-temperature-mqtt.git',
     license=license,
     packages=['rpi_temperature_mqtt'],
-    install_requires=['paho-mqtt', 'RPi.bme280'],
+    install_requires=['paho-mqtt'],
     scripts=['bin/rpi-temperature-mqtt']
 )
  
