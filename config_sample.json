@@ -1,6 +1,6 @@
 {
-    "mqtt_client_id": "power_meter",
-    "mqtt_host": "192.168.0.210",
+    "mqtt_client_id": "Environment_Monitor",
+    "mqtt_host": "localhost",
     "mqtt_port": "1883",
     "sources": [
         {
