@@ -9,6 +9,10 @@ Installation:
 
 Clone the repo
 
+For python2, from the bash prompt, enter:
+
+$ sudo python setup.py install
+
 Configuration:
 -------------------
 
