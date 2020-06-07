@@ -85,7 +85,7 @@ CLI:
 Systemd
    sudo mkdir  /etc/rpi-temperature-mqtt/
    sudo cp my_config.json  /etc/rpi-temperature-mqtt/rpi_temp_config.json
-   sudo cp systemd/rpi_sensors_mqtt.service /etc/systemd/system/multi-user.target.wants
+   sudo cp systemd/rpi_sensors_mqtt.service  /lib/systemd/system/rpi-sensors-mqtt.service
    sudo systemctl daemon-reload 
-   sudo systemctl enable rpi_sensors_mqtt.service # to enable start at system boot
-   sudo systemctl start rpi_sensore_mqtt.service # start now 
+   sudo systemctl enable rpi-sensors-mqtt.service # to enable start at system boot
+   sudo systemctl start rpi-sensore-mqtt.service # start now 
