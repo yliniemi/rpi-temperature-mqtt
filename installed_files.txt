@@ -1,0 +1,2 @@
+/usr/local/bin/rpi-temperature-mqtt
+/usr/local/lib/python2.7/dist-packages/rpi_temperature_mqtt-0.1.0-py2.7.egg
