@@ -19,9 +19,10 @@ Configuration:
 
 You can list available 1wire devices like so
 DS18B20 devices typically start **28-**
-> $ ls /sys/bus/w1/devices
-> 28-0004330feaff  w1_bus_master1
-
+```
+$ ls /sys/bus/w1/devices
+28-0004330feaff  w1_bus_master1
+```
 you can get a raw temperature reading 
 $ cat /sys/bus/w1/devices/28-0004330feaff/w1_slave
 ```
@@ -29,7 +30,7 @@ $ cat /sys/bus/w1/devices/28-0004330feaff/w1_slave
 59 01 55 00 7f ff 0c 10 bc t=21562 # t=temperature / 1000 = 21.562
 ```
 Need to define json configuration file as follows, changing values to suit your 
-needs and device ID's
+needs and match your device ID's
 
 
 .. code:: json
