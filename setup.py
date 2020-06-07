@@ -10,7 +10,7 @@ with open('LICENSE') as f:
 
 setup(
     name='rpi-temperature-mqtt',
-    version='0.0.6',
+    version='0.1.0',
     description='Send temperature from DS18B20 sensors to mqtt broker forked fromm https://github.com/goodfield/rpi-temperature-mqtt.git original author David Uebelacker',
     long_description=readme,
     author='Ian Macdonald',
