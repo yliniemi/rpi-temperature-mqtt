@@ -10,15 +10,16 @@ Installation:
 Clone the repo
 
 For python2, from the bash prompt, enter:
+```
 $ sudo apt-get install -y python-setuptools
 $ sudo python setup.py install
-
+```
 Configuration:
 -------------------
 
 You can list available 1wire devices like so
 $ ls /sys/bus/w1/devices
-DS18B20 devices typically start 28-
+> DS18B20 devices typically start 28-
 
 28-0004330feaff  w1_bus_master1
 
