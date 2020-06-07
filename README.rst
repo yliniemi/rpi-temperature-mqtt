@@ -16,27 +16,39 @@ $ sudo python setup.py install
 Configuration:
 -------------------
 
-Needs a json configuration file as follows (don't forget to change ip and credentials ;-)):
+You can list available 1wire devices like so
+$ ls /sys/bus/w1/devices
+DS18B20 devices typically start 28-
+
+28-0004330feaff  w1_bus_master1
+
+you can get a raw temperature reading 
+$ cat /sys/bus/w1/devices/28-0004330feaff/w1_slave
+59 01 55 00 7f ff 0c 10 bc : crc=bc YES
+59 01 55 00 7f ff 0c 10 bc t=21562 # t=temperature / 1000 = 21.562
+
+Need to define json configuration file as follows, changing values to suit your 
+needs and device ID's
 
 
 .. code:: json
 
     {
-        "mqtt_client_id": "power_meter",
-        "mqtt_host": "192.168.0.210",
+        "mqtt_client_id": "my_client_name",
+        "mqtt_host": "localhost",
         "mqtt_port": "1883",
         "sources": [
             {
-              "serial": "10-0008031e4d9e",
+              "serial": "28-0008031e4d9e",
               "topic": "tele/ServerRoom/rack0_front_bottom",
               "device": "rack0_lower_front"
             },
             {
-             "serial": "10-0008031e804b",
+             "serial": "28-0008031e804b",
              "topic": "tele/ServerRoom/rack0_front_top",
              "device": "rack0_upper_front"            },
             {
-              "serial": "10-0008031eaac7",
+              "serial": "28-0008031eaac7",
              "topic": "tele/ServerRoom/rack0_front_rear",
               "device": "rack0_upper_rear"            }
           ]
@@ -67,5 +79,13 @@ You may enable verbose mode to catch issues, also enable for systemd
 
 Start:
 -------------------
-
+CLI:
     rpi-temperature-mqtt config.json
+
+Systemd
+   sudo mkdir  /etc/rpi-temperature-mqtt/
+   sudo cp my_config.json  /etc/rpi-temperature-mqtt/rpi_temp_config.json
+   sudo cp systemd/rpi_sensors_mqtt.service /etc/systemd/system/multi-user.target.wants
+   sudo systemctl daemon-reload 
+   sudo systemctl enable rpi_sensors_mqtt.service # to enable start at system boot
+   sudo systemctl start rpi_sensore_mqtt.service # start now 

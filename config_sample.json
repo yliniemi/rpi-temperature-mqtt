@@ -1,20 +1,16 @@
 {
-    "mqtt_client_id": "Environment_Monitor",
+    "mqtt_client_id": "rpi_1wire",
     "mqtt_host": "localhost",
     "mqtt_port": "1883",
+    "mqtt_user": "user",
+    "mqtt_password" : "password",
+    "wait_update": 60.0,
+    "wait_process": 3.0,
+    "verbose": "true",
     "sources": [
         {
-          "serial": "10-0008031e4d9e",
-          "topic": "tele/ServerRoom/rack0_front_bottom",
-          "device": "rack0_lower_front"
-        },
-        {
-         "serial": "10-0008031e804b",
-         "topic": "tele/ServerRoom/rack0_front_top",
-         "device": "rack0_upper_front"            },
-        {
-          "serial": "10-0008031eaac7",
-         "topic": "tele/ServerRoom/rack0_front_rear",
-          "device": "rack0_upper_rear"            }
-      ]
+          "serial": "28-0004332d9dff",
+          "topic": "tele/ServerRoom/rack01_front_bottom",
+	  "device": "rack0_lower_front"
+        }      ]
 }

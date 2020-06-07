@@ -5,7 +5,7 @@ After=network.target
 [Service]
 # Hack because Python can't cope with a DynamicUser with no HOME
 Environment="HOME=/"
-ExecStart=/usr/local/bin/rpi-temperature-mqtt /etc/rpi-temperature-mqtt/rpi_mqtt_config.json
+ExecStart=/usr/local/bin/rpi-temperature-mqtt /etc/rpi-temperature-mqtt/rpi_temp_config.json
 
 DynamicUser=yes
 MemoryDenyWriteExecute=true
