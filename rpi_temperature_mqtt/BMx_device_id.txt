@@ -1,0 +1,30 @@
+Register Location = 0xD0
+BMP180 = 0x55 Pressure only
+BMP280 = 0x58 Pressure & Temperature
+BME280 = 0x60 Pressure, Temperature & Humidity
+
+The register for the different devices are the same address just missing in devices that don't support them.
+This means we can just not read the registers that do not exist for the device we are reading based on the device id
+
+Calculate dew point from %H & Temp
+
+* Values are calculated using the August-Roche-Magnus approximation.
+
+* Equations for each unknown written in terms of the two knowns.
+
+* Spreadsheet-ready equations for each unknown in terms of the two knowns:
+    RH: =100*(EXP((17.625*TD)/(243.04+TD))/EXP((17.625*T)/(243.04+T)))
+    TD: =243.04*(LN(RH/100)+((17.625*T)/(243.04+T)))/(17.625-LN(RH/100)-((17.625*T)/(243.04+T)))
+     T: =243.04*(((17.625*TD)/(243.04+TD))-LN(RH/100))/(17.625+LN(RH/100)-((17.625*TD)/(243.04+TD)))
+     ( replace "T", "TD", and "RH" with your actual cell references)
+     ( T and TD inputs/outputs to the equations are in Celsius) 
+
+
+Calculating pressure at sea level
+
+With the measured pressure p and the absolute altitude the pressure at sea level can be calculated: 
+
+
+P0 = p/(1 - altitude/44330)^5.255
+
+Thus, a difference in altitude of altitude = 10m corresponds to 1.2hPa pressure change at sea level. 

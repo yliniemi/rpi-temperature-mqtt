@@ -92,14 +92,7 @@ class TemperatureLogger:
                     if 'offset' in source:
                         temperature += float(source['offset'])
                     self.publish_temperature(topic, temperature, dev)
-
                     
-                    '''
-                    # the block means only temerature changes are published, my requirement is to publish
-                    # regardless many may want this will look at making it an option
-                    if serial not in self.temperatures or self.temperatures[serial] != temperature:
-                        self.temperatures[serial] = temperature
-                        self.publish_temperature(topic, temperature, dev)'''
                 self.verbose('Entering wait_process delay of: ' + str(self.wait_process) + ' Seconds')
                 time.sleep(self.wait_process)
             
