@@ -8,7 +8,8 @@ set -x
 telegraf_user=telegraf
 telegraf_passwd=PassW0rd
 cli_user=ian
-pi_zero=1
+# ste to 1 for pi zero 
+pi_zero=0
 if [[ ${pi_zero} -eq 1 ]]
 then
 grafana=grafana-rpi_7.0.3_armhf.deb
@@ -63,8 +64,8 @@ sudo cat > telegraf.conf <<EOF
  urls = ["http://127.0.0.1:8086"]
  database = "sensors"
  skip_database_creation = true
-  username = ${telegraf_user}
-  password = ${telegraf_passwd}
+  username = "${telegraf_user}"
+  password = "${telegraf_passwd}"
 [[inputs.cpu]]
   percpu = true
   totalcpu = true
@@ -81,8 +82,8 @@ sudo cat > telegraf.conf <<EOF
 [[inputs.mqtt_consumer]]
         servers = ["tcp://localhost:1883"]
         data_format = "json"
-        username = ${telegraf_user}
-        password = ${telegraf_passwd}
+        username = "${telegraf_user}"
+        password = "${telegraf_passwd}"
         topics = [
           "tele/ServerRoom/SENSOR/#",
           "stat/ServerRoom/POWER/#",
@@ -121,7 +122,7 @@ sudo systemctl restart mosquitto.service
 echo "will now add user ${cli_user} supply passowrd when asked"
 sudo adduser ${cli_user}
 echo "adding ${cli_user} to sudoers group"
-sudo adduser ${cli_user} sudo
+sudo usermod  -aG sudo {cli_user} 
 echo "finish off with the following"
 echo "change pi user password or delete it \'sudo deluser -remove-home pi\' "
 echo "go to http://$(hostname  -I | cut -f1 -d' '):3000 and setup grafana admin password for first run"
