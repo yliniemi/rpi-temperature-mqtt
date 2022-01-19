@@ -2,6 +2,7 @@
 // #!/usr/bin/python
 
 import sys
+import time
 import json
 from rpi_temperature_mqtt.logger import TemperatureLogger
 
