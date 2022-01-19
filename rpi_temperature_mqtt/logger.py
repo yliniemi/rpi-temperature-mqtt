@@ -19,10 +19,6 @@ class TemperatureLogger:
 
     def __init__(self, config):
         self.config = config
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self.power_pin, GPIO.OUT)
-        GPIO.output(self.power_pin, GPIO.HIGH)
-        time.sleep(10)
 
     def verbose(self, message):
         if self.config and 'verbose' in self.config and self.config['verbose'] == 'true':
@@ -86,6 +82,10 @@ class TemperatureLogger:
             wait_process = int(self.config['wait_process'])
         if 'wait_update' in self.config:
             wait_update = int(self.config['wait_update'])
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(self.power_pin, GPIO.OUT)
+        GPIO.output(self.power_pin, GPIO.HIGH)
+        time.sleep(10)
         while True:
             for source in self.config['sources']:
                 time.sleep(wait_process)
