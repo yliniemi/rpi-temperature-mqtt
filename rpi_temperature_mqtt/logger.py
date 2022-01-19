@@ -142,7 +142,7 @@ class TemperatureLogger:
         self.worker_sensor = Thread(target=self.update)
         self.worker_sensor.setDaemon(True)
         self.worker_sensor.start()
-        self.wroker_mqtt = Thread(target=self.mqtt_connect)
+        self.worker_mqtt = Thread(target=self.mqtt_connect)
         self.worker_mqtt.setDaemon(True)
         self.worker_mqtt.start()
         # while True:
