@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 
 import sys
 import json
@@ -7,12 +7,16 @@ from rpi_temperature_mqtt.logger import TemperatureLogger
 
 def main(argv):
     if not argv or len(argv) != 1:
-        print 'rpi-power-meter-mqtt <config file>'
+        print 'rpi-temperature-mqtt <config file>'
     else:
         with open(argv[0]) as data_file:
             config = json.load(data_file)
             server = TemperatureLogger(config)
             server.start()
+            # I don't know if these two lines are required
+            # Maybe execution just stops and all threads are killed
+            while True:
+                time.sleep(1000)
 
 if __name__ == "__main__":
     main(sys.argv[1:])

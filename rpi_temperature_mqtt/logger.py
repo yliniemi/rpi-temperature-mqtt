@@ -30,7 +30,7 @@ class TemperatureLogger:
         sys.stderr.flush()
 
     def mqtt_connect(self):
-        if self.mqtt_broker_reachable():
+        # if self.mqtt_broker_reachable():
             self.verbose('Connecting to ' + self.config['mqtt_host'] + ':' + self.config['mqtt_port'])
             self.mqtt_client = mqtt.Client(self.config['mqtt_client_id'])
             if 'mqtt_user' in self.config and 'mqtt_password' in self.config:
@@ -45,8 +45,8 @@ class TemperatureLogger:
             except:
                 self.error(traceback.format_exc())
                 self.mqtt_client = None
-        else:
-            self.error(self.config['mqtt_host'] + ':' + self.config['mqtt_port'] + ' not reachable!')
+        # else:
+            # self.error(self.config['mqtt_host'] + ':' + self.config['mqtt_port'] + ' not reachable!')
 
     def mqtt_on_connect(self, mqtt_client, userdata, flags, rc):
         self.mqtt_connected = True
@@ -138,7 +138,9 @@ class TemperatureLogger:
             self.mqtt_client.publish(topic, str(temperature), 0, False)
 
     def start(self):
-        self.worker = Thread(target=self.update)
-        self.worker.setDaemon(True)
-        self.worker.start()
-        self.mqtt_connect()
+        self.worker_sensor = Thread(target=self.update)
+        self.worker_sensor.setDaemon(True)
+        self.worker_sensor.start()
+        self.wroker_mqtt = Thread(target=self.mqtt)
+        self.worker_mqtt.setDaemon(True)
+        self.worker_mqtt.start()
