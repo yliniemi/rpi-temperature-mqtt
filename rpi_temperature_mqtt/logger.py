@@ -1,3 +1,4 @@
+import RPi.GPIO as GPIO
 import time
 import re
 import socket
@@ -13,10 +14,15 @@ class TemperatureLogger:
     mqtt_client = None
     mqtt_connected = False
     worker = None
+    power_pin = 17
     temperatures = {}
 
     def __init__(self, config):
         self.config = config
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(self.power_pin, GPIO.OUT)
+        GPIO.output(self.power_pin, GPIO.HIGH)
+        time.sleep(10)
 
     def verbose(self, message):
         if self.config and 'verbose' in self.config and self.config['verbose'] == 'true':
@@ -74,12 +80,15 @@ class TemperatureLogger:
     def update(self):
         wait_process = 5
         wait_update = 300
+        sensor_offline = False
+        consecutive_sensor_offlines = 0
         if 'wait_process' in self.config:
             wait_process = int(self.config['wait_process'])
         if 'wait_update' in self.config:
             wait_update = int(self.config['wait_update'])
         while True:
             for source in self.config['sources']:
+                time.sleep(wait_process)
                 serial = source['serial']
                 topic = source['topic']
                 try:
@@ -87,6 +96,7 @@ class TemperatureLogger:
                     device = open('/sys/bus/w1/devices/' + serial + '/w1_slave')
                 except IOError:
                     self.verbose("Sensor: {} not online or wrong id supplied!".format(serial))
+                    sensor_offline = True
                     continue
                 raw = device.read()
                 device.close()
@@ -105,8 +115,21 @@ class TemperatureLogger:
                     self.temperatures[serial] = temperature
                     self.publish_temperature(topic, temperature)
 
-                time.sleep(wait_process)
+            if sensor_offline == True:
+                consecutive_sensor_offlines += 1
+            else:
+                consecutive_sensor_offlines = 0
+            if consecutive_sensor_offlines > 3:
+                time.sleep(5)
+                GPIO.output(self.power_pin, GPIO.LOW)
+                time.sleep(15)
+                GPIO.output(self.power_pin, GPIO.HIGH)
+                time.sleep(15)
+                self.verbose("At least one of the sensors has been offline for too long. Cutting and reapplying power to the sensor".format(serial))
+            sensor_offline = False
             time.sleep(wait_update)
+        # This doesn't actually get called since it's outside an inifinite loop
+        GPIO.cleanup()
 
     def publish_temperature(self, topic, temperature):
         if self.mqtt_connected:
