@@ -13,7 +13,8 @@ class TemperatureLogger:
     config = None
     mqtt_client = None
     mqtt_connected = False
-    worker = None
+    worker_sensor = None
+    worker_mqtt = None
     power_pin = 17
     temperatures = {}
 
