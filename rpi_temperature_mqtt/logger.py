@@ -13,13 +13,11 @@ class TemperatureLogger:
     mqtt_client = None
     mqtt_connected = False
     worker = None
-    # removed as not one of my requirements
-    #temperatures = {}
+    temperatures = {}
 
     def __init__(self, config):
         self.config = config
-        self.wait_update = self.config.get('wait_update', float(60))
-        self.wait_process = self.config.get('wait_process', float(5))
+
     def verbose(self, message):
         if self.config and 'verbose' in self.config and self.config['verbose'] == 'true':
             sys.stdout.write('VERBOSE: ' + message + '\n')
@@ -54,7 +52,7 @@ class TemperatureLogger:
 
     def mqtt_on_disconnect(self, mqtt_client, userdata, rc):
         self.mqtt_connected = False
-        self.verbose('Diconnected! will reconnect! ...')
+        self.verbose('Disconnected! will reconnect! ...')
         if rc is 0:
             self.mqtt_connect()
         else:
@@ -74,43 +72,48 @@ class TemperatureLogger:
             return False
 
     def update(self):
+        wait_process = 5
+        wait_update = 300
+        if 'wait_process' in self.config:
+            wait_process = int(self.config['wait_process'])
+        if 'wait_update' in self.config:
+            wait_update = int(self.config['wait_update'])
         while True:
-        
             for source in self.config['sources']:
                 serial = source['serial']
                 topic = source['topic']
-
-                # added ijm
-                dev = source['device']
-                device = open('/sys/bus/w1/devices/' + serial + '/w1_slave')
+                try:
+                    # if sensor is disappearing we still want data from others
+                    device = open('/sys/bus/w1/devices/' + serial + '/w1_slave')
+                except IOError:
+                    self.verbose("Sensor: {} not online or wrong id supplied!".format(serial))
+                    continue
                 raw = device.read()
                 device.close()
                 match = re.search(r't=([\d]+)', raw)
                 if match:
                     temperature_raw = match.group(1)
                     temperature = round(float(temperature_raw)/1000, 2)
+
                     if 'offset' in source:
                         temperature += float(source['offset'])
-                    self.publish_temperature(topic, temperature, dev)
 
-                    
-                    '''
-                    # the block means only temerature changes are published, my requirement is to publish
-                    # regardless many may want this will look at making it an option
-                    if serial not in self.temperatures or self.temperatures[serial] != temperature:
-                        self.temperatures[serial] = temperature
-                        self.publish_temperature(topic, temperature, dev)'''
-                self.verbose('Entering wait_process delay of: ' + str(self.wait_process) + ' Seconds')
-                time.sleep(self.wait_process)
-            
-            self.verbose('Entering wait_update delay of: ' + str(self.wait_update) + ' Seconds')
-            time.sleep(self.wait_update)
+                    # if serial not in self.temperatures or self.temperatures[serial] != temperature:
+                        # self.temperatures[serial] = temperature
+                        # self.publish_temperature(topic, temperature)
 
-    def publish_temperature(self, topic, temperature, dev):
+                    self.temperatures[serial] = temperature
+                    self.publish_temperature(topic, temperature)
+
+                time.sleep(wait_process)
+            time.sleep(wait_update)
+
+    def publish_temperature(self, topic, temperature):
         if self.mqtt_connected:
-            dev = '{{ "{0}": {1} }}'.format(dev, str(temperature))
-            self.verbose('Publishing: ' + str(temperature))
-            self.mqtt_client.publish(topic, dev, 0, True)
+            self.verbose('Publishing: ' + topic + " " + str(temperature))
+            # self.mqtt_client.publish(topic, str(temperature), 0, True)
+            self.mqtt_client.publish(topic, str(temperature), 0, False)
+
     def start(self):
         self.worker = Thread(target=self.update)
         self.worker.setDaemon(True)
