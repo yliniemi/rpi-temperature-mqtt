@@ -15,7 +15,6 @@ class TemperatureLogger:
     mqtt_connected = False
     worker_sensor = None
     worker_mqtt = None
-    power_pin = 17
     temperatures = {}
 
     def __init__(self, config):
@@ -79,17 +78,28 @@ class TemperatureLogger:
     def update(self):
         wait_process = 5
         wait_update = 300
+        power_pin = -1
+        poweroff_cycle = 1000000000
         sensor_offline = False
         consecutive_sensor_offlines = 0
+        cycle = 0
         if 'wait_process' in self.config:
             wait_process = int(self.config['wait_process'])
         if 'wait_update' in self.config:
             wait_update = int(self.config['wait_update'])
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self.power_pin, GPIO.OUT)
-        GPIO.output(self.power_pin, GPIO.HIGH)
-        time.sleep(10)
+        if 'power_pin' in self.config:
+            power_pin = int(self.config['power_pin'])
+            self.verbose('power_pin set to: ' + str(power_pin))
+        if 'poweroff_cycle' in self.config:
+            poweroff_cycle = int(self.config['poweroff_cycle'])
+            self.verbose('will cycle the power every ' + str(poweroff_cycle) + ' rounds')
+        if power_pin != -1:
+            GPIO.setmode(GPIO.BCM)
+            GPIO.setup(power_pin, GPIO.OUT)
+            GPIO.output(power_pin, GPIO.HIGH)
+            time.sleep(10)
         while True:
+            cycle += 1
             for source in self.config['sources']:
                 time.sleep(wait_process)
                 serial = source['serial']
@@ -118,13 +128,22 @@ class TemperatureLogger:
                 consecutive_sensor_offlines += 1
             else:
                 consecutive_sensor_offlines = 0
-            if consecutive_sensor_offlines > 3:
+            if (consecutive_sensor_offlines > 3 or cycle > poweroff_cycle) and power_pin != -1:
+                # I added this clause because my sensors are cheap Chinese knock offs. After a while they go missing or show incorrect temperatures.
+                # That is why I'm cutting the power of those bastards.
+                # If you want to use this option hook your sensors power_pin to one of the gpio. Power will be cut when sensors go offline.
+                # If you want your power to be cut also after a certain time, poweroff_cycle specifies how many times we read the sensors before cutting their power.
+                if consecutive_sensor_offlines > 3:
+                    self.error("One of the sensors is gone. Rebooting the sensors.".format(serial))
+                if cycle > poweroff_cycle:
+                    self.verbose("poweroff_cycle reached. Maybe the sensors are just fine. Maybe the readings are off. Rebooting just to be on the safe side.".format(serial))
                 time.sleep(5)
-                GPIO.output(self.power_pin, GPIO.LOW)
+                GPIO.output(power_pin, GPIO.LOW)
                 time.sleep(15)
-                GPIO.output(self.power_pin, GPIO.HIGH)
+                GPIO.output(power_pin, GPIO.HIGH)
                 time.sleep(15)
-                self.verbose("At least one of the sensors has been offline for too long. Cutting and reapplying power to the sensor".format(serial))
+                consecutive_sensor_offlines = 0
+                cycle = 0
             sensor_offline = False
             time.sleep(wait_update)
         # This doesn't actually get called since it's outside an inifinite loop
