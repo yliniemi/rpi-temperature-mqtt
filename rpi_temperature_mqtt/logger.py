@@ -31,23 +31,25 @@ class TemperatureLogger:
         sys.stderr.flush()
 
     def mqtt_connect(self):
-        # if self.mqtt_broker_reachable():
-            self.verbose('Connecting to ' + self.config['mqtt_host'] + ':' + self.config['mqtt_port'])
-            self.mqtt_client = mqtt.Client(self.config['mqtt_client_id'])
-            if 'mqtt_user' in self.config and 'mqtt_password' in self.config:
-                self.mqtt_client.username_pw_set(self.config['mqtt_user'], self.config['mqtt_password'])
+        while True:
+            if self.mqtt_broker_reachable():
+                self.verbose('Connecting to ' + self.config['mqtt_host'] + ':' + self.config['mqtt_port'])
+                self.mqtt_client = mqtt.Client(self.config['mqtt_client_id'])
+                if 'mqtt_user' in self.config and 'mqtt_password' in self.config:
+                    self.mqtt_client.username_pw_set(self.config['mqtt_user'], self.config['mqtt_password'])
 
-            self.mqtt_client.on_connect = self.mqtt_on_connect
-            self.mqtt_client.on_disconnect = self.mqtt_on_disconnect
+                self.mqtt_client.on_connect = self.mqtt_on_connect
+                self.mqtt_client.on_disconnect = self.mqtt_on_disconnect
 
-            try:
-                self.mqtt_client.connect(self.config['mqtt_host'], int(self.config['mqtt_port']), 60)
-                self.mqtt_client.loop_forever()
-            except:
-                self.error(traceback.format_exc())
-                self.mqtt_client = None
-        # else:
-            # self.error(self.config['mqtt_host'] + ':' + self.config['mqtt_port'] + ' not reachable!')
+                try:
+                    self.mqtt_client.connect(self.config['mqtt_host'], int(self.config['mqtt_port']), 60)
+                    self.mqtt_client.loop_forever()
+                except:
+                    self.error(traceback.format_exc())
+                    self.mqtt_client = None
+            else:
+                self.error(self.config['mqtt_host'] + ':' + self.config['mqtt_port'] + ' not reachable!')
+            time.sleep(60)
 
     def mqtt_on_connect(self, mqtt_client, userdata, flags, rc):
         self.mqtt_connected = True
@@ -109,10 +111,6 @@ class TemperatureLogger:
                     if 'offset' in source:
                         temperature += float(source['offset'])
 
-                    # if serial not in self.temperatures or self.temperatures[serial] != temperature:
-                        # self.temperatures[serial] = temperature
-                        # self.publish_temperature(topic, temperature)
-
                     self.temperatures[serial] = temperature
                     self.publish_temperature(topic, temperature)
 
@@ -135,7 +133,7 @@ class TemperatureLogger:
     def publish_temperature(self, topic, temperature):
         if self.mqtt_connected:
             self.verbose('Publishing: ' + topic + " " + str(temperature))
-            # self.mqtt_client.publish(topic, str(temperature), 0, True)
+            # False at the end means the message isn't retained. We don't care about temperature when the sensor was last online. We only care about it at this very moment
             self.mqtt_client.publish(topic, str(temperature), 0, False)
 
     def start(self):
@@ -145,5 +143,3 @@ class TemperatureLogger:
         self.worker_mqtt = Thread(target=self.mqtt_connect)
         self.worker_mqtt.setDaemon(True)
         self.worker_mqtt.start()
-        # while True:
-            # time.sleep(100)
