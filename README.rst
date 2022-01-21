@@ -47,13 +47,13 @@ Needs a json configuration file as follows (don't forget to change ip and creden
 Optional json variables:
 -------------------
 
-Wait before query all sensors again (defaults to 300)
+Wait before query all sensors again (defaults to 10 seconds)
     
-    "wait_update": 60.0,
+    "wait_update": "60",
     
-Wait between sensor reads (defaults to 5)
+Wait between sensor reads (defaults to 5 seconds)
     
-    "wait_process": 3.0,
+    "wait_process": "3",
     
 In case your mqtt has user and passwd
     
@@ -64,6 +64,15 @@ In case your mqtt has user and passwd
 You may enable verbose mode to catch issues, also enable for systemd 
 
     "verbose": "true",
+
+If your sensor is misbehaving you can power it from one of the gpio pins so it can be rebooted if it locks up
+
+    "power_pin": "17",
+
+My sensor is really naughty and gives false results after a few hours. I reboot it every once in a while with this setting.
+This means that it will be rebooted even if no probleams arise after reading the sensors a 1000 times.
+
+    "poweroff_cycle": "1000",
 
 
 Start:
