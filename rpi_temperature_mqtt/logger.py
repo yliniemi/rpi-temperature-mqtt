@@ -3,7 +3,6 @@ import time
 import re
 import socket
 import sys
-
 import traceback
 
 import paho.mqtt.client as mqtt
@@ -19,6 +18,15 @@ class TemperatureLogger:
 
     def __init__(self, config):
         self.config = config
+
+    def median(values):
+        if values == []:
+            raise NameError('Empty list has no median')
+        values.sort()
+        if len(values) % 2 == 1:
+            return values[len(values) // 2]
+        else:
+            return (values[len(values) // 2 - 1] + values[len(values) // 2]) / 2
 
     def verbose(self, message):
         if self.config and 'verbose' in self.config and self.config['verbose'] == 'true':

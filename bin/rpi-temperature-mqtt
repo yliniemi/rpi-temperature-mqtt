@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import time
@@ -8,7 +8,7 @@ from rpi_temperature_mqtt.logger import TemperatureLogger
 
 def main(argv):
     if not argv or len(argv) != 1:
-        print 'rpi-temperature-mqtt <config file>'
+        print ('rpi-temperature-mqtt <config file>')
     else:
         with open(argv[0]) as data_file:
             config = json.load(data_file)
