@@ -86,7 +86,7 @@ class TemperatureLogger:
     def update(self):
         wait_process = 5
         wait_update = 5
-        number_of_measurements = 1
+        number_of_measurements = 3
         power_pin = -1
         poweroff_cycle = 1000000000
         max_delta = 2.0
@@ -150,7 +150,7 @@ class TemperatureLogger:
                         self.publish_temperature(topic, temperature)
                         previous_temperatures[serial] = temperature
                     else:
-                        self.error(f"{serial} changed too fast")
+                        self.error(f"{topic} changed too fast")
                         previous_temperatures[serial] = -1234
                         delta_too_big = True
                 else:
@@ -170,14 +170,14 @@ class TemperatureLogger:
                 if cycle > poweroff_cycle:
                     self.verbose("Poweroff_cycle reached. Maybe the sensors are just fine. Maybe the readings are off. Rebooting just to be on the safe side.")
                 if delta_too_big:
-                    self.verbose("One of the sesors changed too much from previous measurement. It might be an error. Rebootin sensors.")
+                    self.verbose("One of the sensors changed too much from previous measurement. It could be an error. Rebootin the sensors.")
 
                 # If power_pin has been defined, reboot the sensor
-                if self.power_pin != -1:
+                if power_pin != -1:
                     time.sleep(5)
-                    GPIO.output(self.power_pin, GPIO.LOW)
+                    GPIO.output(power_pin, GPIO.LOW)
                     time.sleep(15)
-                    GPIO.output(self.power_pin, GPIO.HIGH)
+                    GPIO.output(power_pin, GPIO.HIGH)
                     time.sleep(15)
                 else:
                     self.verbose("Sensor would have been rebooted if power_pin was defined")
